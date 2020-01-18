@@ -1,13 +1,18 @@
 package io.javabrains.springbootstarter.topic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class TopicService {
 
+    Logger logger = LoggerFactory.getLogger(TopicService.class);
     private List<Topic> topics = Arrays.asList(
             new Topic("spring", "Spring Framework", "Spring Framework Description"),
             new Topic("java", "Core Java", "Core Java Description"),
@@ -19,6 +24,14 @@ public class TopicService {
     }
 
     public Topic getTopic(String id) {
-        return topics.stream().filter(t -> t.getId().equals(id)).findFirst().get();
+        Topic topic = null;
+        try {
+            topic = topics.stream().filter(t -> t.getId().equals(id)).findFirst().get();
+        } catch (NoSuchElementException e) {
+            logger.warn(e.getStackTrace().toString());
+            logger.warn("Could not find {} topic from ", id);
+            topic = new Topic("nothing", "nothing", StringUtils.capitalize(id) + " Topic Does Not Exist.");
+        }
+        return topic;
     }
 }
