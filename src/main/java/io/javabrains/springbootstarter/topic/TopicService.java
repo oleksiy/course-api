@@ -24,11 +24,11 @@ public class TopicService {
     }
 
     public Topic getTopic(String id) {
-        Topic topic = null;
+        Topic topic;
         try {
             topic = topics.stream().filter(t -> t.getId().equals(id)).findFirst().get();
         } catch (NoSuchElementException e) {
-            logger.warn(e.getStackTrace().toString());
+            logger.warn(e.getMessage());
             logger.warn("Could not find {} topic from ", id);
             topic = new Topic("nothing", "nothing", StringUtils.capitalize(id) + " Topic Does Not Exist.");
         }
